@@ -21,10 +21,7 @@ process.on('unhandledRejection', (reason: any) => {
 
 const start = async () => {
     try {
-
-        const { server } = await Server.init(
-            config,
-        );
+        const { server } = await Server.init(config);
 
         if (!_.isNil(config.SENTRY_DSN)) {
             await server.register([

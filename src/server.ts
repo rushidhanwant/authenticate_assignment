@@ -8,19 +8,15 @@ import _ from 'ramda';
 import Path from 'path';
 const Inert = require('@hapi/inert');
 
-import * as ZipkinInstrumentation from 'zipkin-instrumentation-hapi';
-import { tracer } from './zipkin';
-
 import AuthenticationRouter from './authentication/router';
 import DiagnosticRouter from './diagnostic/router';
 import UserRouter from './user/router';
+import phoneBookRouter from './phonebook/router';
 
 import authenticationHandler from './authentication/handler';
 import userHandler from './user/handler';
 
-export const init = async (
-    config,
-) => {
+export const init = async (config) => {
     // Hapi JS server initialization
     const server = Hapi.server({
         port: config.PORT,
@@ -88,6 +84,7 @@ export const init = async (
     AuthenticationRouter(server, authenticationHandlerObj);
     DiagnosticRouter(server);
     UserRouter(server, userHandlerObj);
+    phoneBookRouter(server);
 
     await server.initialize();
     return {
