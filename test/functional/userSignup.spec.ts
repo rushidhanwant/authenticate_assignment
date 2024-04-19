@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import 'mocha';
-import sinon from 'sinon';
 import { getTestEnv } from '../env/testEnvironment';
 
 describe('User API', async () => {
@@ -9,13 +8,12 @@ describe('User API', async () => {
     beforeEach(async () => {
         testEnv = await getTestEnv();
         await testEnv.resetDB();
-        sinon.restore();
     });
 
     it('sign up handles bad request', async () => {
         const newUser = {
-            firstName: 'John',
-            lastName: 'Watson',
+            name: 'John',
+            phoneNumber: '7739485798',
         };
 
         const response = await testEnv.server.inject({
@@ -28,8 +26,8 @@ describe('User API', async () => {
 
     it('user should able to sign up', async () => {
         const newUser = {
-            firstName: 'John',
-            lastName: 'Watson',
+            name: 'John',
+            phoneNumber: '7739485798',
             email: 'john.watson@gmail.com',
             password: '12345678',
         };
@@ -39,5 +37,6 @@ describe('User API', async () => {
             payload: newUser,
         });
         expect(response.statusCode).to.eql(200);
+        expect(response.result.user).to.eql('John');
     });
 });

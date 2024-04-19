@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { isRight } from 'fp-ts/lib/These';
-import 'mocha';
 import * as userRepo from '../../src/user/repo';
 import * as F from '../env/factories';
 import { getTestEnv } from '../env/testEnvironment';
@@ -25,17 +24,17 @@ describe('Auth', async () => {
             method: 'post',
             url: '/auth/login',
             payload: {
-                email: 'a' + user.email,
+                phoneNumber: 'a' + user.phoneNumber,
                 password: user.password,
             },
         });
-        expect(response.statusCode).to.eql(401);
+        expect(response.statusCode).to.eql(400);
 
         const invalidPasswordResponse = await testEnv.server.inject({
             method: 'post',
             url: '/auth/login',
             payload: {
-                email: user.email,
+                phoneNumber: user.phoneNumber,
                 password: 'a' + user.password,
             },
         });
@@ -47,7 +46,7 @@ describe('Auth', async () => {
             method: 'post',
             url: '/auth/login',
             payload: {
-                email: user.email,
+                phoneNumber: user.phoneNumber,
                 password: user.password,
             },
         });
@@ -72,7 +71,7 @@ describe('Auth', async () => {
             method: 'post',
             url: '/auth/login',
             payload: {
-                email: user.email,
+                phoneNumber: user.phoneNumber,
                 password: user.password,
             },
         });

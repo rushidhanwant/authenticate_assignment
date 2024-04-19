@@ -3,8 +3,11 @@ import * as _ from 'ramda';
 
 export function fakeUser(options) {
     const user = {
-        firstName: Faker.name.firstName(),
-        lastName: Faker.name.lastName(),
+        name: Faker.name.firstName() + ' ' + Faker.name.lastName(),
+        phoneNumber: Faker.phone
+            .phoneNumberFormat()
+            .replace('-', '')
+            .replace('-', ''),
         email: Faker.internet.email(),
         password: Faker.internet.password(),
     };
