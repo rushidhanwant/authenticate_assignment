@@ -24,7 +24,9 @@ export default function authenticationHandler(env) {
         login: async (
             loginDetails: LoginDetails,
         ): Promise<Either<LoginError, LoginResponse>> => {
-            const user = await userRepo.getUserByEmail(loginDetails.email);
+            const user = await userRepo.getUserByPhoneNumber(
+                loginDetails.phoneNumber,
+            );
             if (_.isNil(user)) {
                 return left('Invalid-credentials');
             }
@@ -41,7 +43,6 @@ export default function authenticationHandler(env) {
 
             return right({ authToken: jwtToken, userId: user.id });
         },
-
 
         getUserToken: (user) => getUserToken(env.config.JWT_SECRET, user),
 

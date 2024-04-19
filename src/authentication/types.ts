@@ -1,7 +1,10 @@
 import * as Joi from 'joi';
 
 export const loginSchema = Joi.object({
-    email: Joi.string().email().required(),
+    phoneNumber: Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/)
+        .required(),
     password: Joi.string().min(8).required(),
 });
 
@@ -10,7 +13,7 @@ export const loginWithGoogleSchema = Joi.object({
 });
 
 export interface LoginDetails {
-    email: string;
+    phoneNumber: string;
     password: string;
 }
 

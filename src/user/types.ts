@@ -1,22 +1,27 @@
 import * as Joi from 'joi';
 
 export const signUpSchema = Joi.object({
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
-    email: Joi.string().email().required(),
+    name: Joi.string().required(),
+    phoneNumber: Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/)
+        .required(),
+    email: Joi.string().email(),
     password: Joi.string().min(8).required(),
 });
 
 export interface NewUser {
-    firstName: string;
-    lastName: String;
-    email: string;
+    name: string;
+    phoneNumber: string;
+    email?: string;
     password: string;
 }
 
 export type UserRegistrationError =
     | 'userAlreadyExist'
     | 'passwordHashingFailed'
-    | 'stripeError';
+    | 'errorInSavingPhoneNumber'
+    | 'errorInCreatingUser'
+    | 'unExpectedError';
 
 export type UserID = Number;

@@ -28,7 +28,7 @@ export default function (server: Hapi.Server, userHandler) {
                         .response({ errors: [wrapError(response.left)] })
                         .code(400);
                 }
-                return h.response({ userID: response.right }).code(200);
+                return h.response({ user: response.right }).code(200);
             },
             auth: false,
             tags: ['api', 'user'],

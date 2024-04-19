@@ -11,7 +11,7 @@ export default function userHandler(env) {
             const result = await repo.saveUser(signUpDetails);
             if (isLeft(result)) {
                 userAccountCreationFailed({
-                    email: signUpDetails.email,
+                    phoneNumber: signUpDetails.phoneNumber,
                     reason: result.left,
                 });
                 return result;
@@ -19,7 +19,7 @@ export default function userHandler(env) {
 
             userAccountCreated({
                 id: result.right,
-                email: signUpDetails.email,
+                phoneNumber: signUpDetails.phoneNumber,
             });
             return right(result.right);
         },
