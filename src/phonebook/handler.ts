@@ -2,7 +2,7 @@ import { Either, isLeft, right, left } from 'fp-ts/lib/Either';
 import { markSpamFailed } from '../logEvents';
 import * as _ from 'ramda';
 import * as repo from './repo';
-import { SpamData, SpamCount, SpamError, SpamDetails, PhoneNumberSchema } from './types';
+import { SpamData, SpamCount, SpamError, SpamDetails, PhoneNumberSchema, Ids } from './types';
 
 export const checkIfNumberExists = async (number: string): Promise<boolean> => {
     const numberDetails = await repo.getNumberDetails(number);
@@ -33,6 +33,13 @@ export const incrementSpamCount = async (spamData: SpamData) : Promise<number> =
     return numberDetails.spam_count
 }
     
+export const checkIfNumberisAlreadyMarkedByUser = async (info: Ids): Promise<boolean> => {
+    const resp = await repo.checkIfNumberMarkedSpam(info);
+    if (_.isNil(resp)) {
+        return false;
+    }
+    return true
+}
 
 export const markNumberSpam = async (
     spamData: SpamData,
@@ -40,6 +47,12 @@ export const markNumberSpam = async (
 
     try {
         const numberDetails = await getOrAddPhoneNumber(spamData.phoneNumber);
+        const isNumberMarkedSpam = await checkIfNumberisAlreadyMarkedByUser({userId:spamData.userId, phoneId:numberDetails.id});
+        
+        if(isNumberMarkedSpam){
+            return left('alreadyMarkedSpam');
+        }
+
         const spamCount = await incrementSpamCount(spamData);
         
         const spamDetails: SpamDetails = {
