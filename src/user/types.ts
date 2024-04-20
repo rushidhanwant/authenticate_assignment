@@ -22,6 +22,11 @@ export type UserRegistrationError =
     | 'passwordHashingFailed'
     | 'errorInSavingPhoneNumber'
     | 'errorInCreatingUser'
-    | 'unExpectedError';
+    | 'unExpectedError'
+    | 'errorInAddingContactInfo';
 
-export type UserID = Number;
+export type ResponseUser = {
+    name: String;
+    email: String;
+    userId: Number;
+}

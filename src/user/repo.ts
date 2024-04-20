@@ -3,10 +3,11 @@ import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
 
 const userTableName = 'users';
 const phoneNumberTableName = 'phone_numbers';
+const contactsTableName = 'contacts';
 
 import db from '../db';
 
-import { NewUser, UserID, UserRegistrationError } from './types';
+import { NewUser, ResponseUser, UserRegistrationError } from './types';
 
 import Bcrypt from 'bcrypt';
 
@@ -39,7 +40,7 @@ export async function updateUserDetails(userId, newDetails) {
 
 export async function saveUser(
     user: NewUser,
-): Promise<Either<UserRegistrationError, UserID>> {
+): Promise<Either<UserRegistrationError, ResponseUser>> {
     // check if user already exists by phone number
     try {
         const existingUser = await getUserByPhoneNumber(user.phoneNumber);
@@ -57,7 +58,8 @@ export async function saveUser(
 
         const phoneResp = await trx(phoneNumberTableName)
             .insert({ number: user.phoneNumber })
-            .returning('id');
+            .returning('*')
+            .then((rows) => rows[0]);
 
         if (_.isNil(phoneResp)) {
             trx.rollback();
@@ -68,18 +70,32 @@ export async function saveUser(
             .insert({
                 name: user.name,
                 email: user.email,
-                phone_id: phoneResp[0],
+                phone_id: phoneResp.id,
                 password: hashedPassword,
             })
-            .returning('name');
+            .returning('*')
+            .then((rows) => rows[0]);
 
         if (_.isNil(userResp)) {
             trx.rollback();
             return left('errorInCreatingUser');
         }
 
+        const contactResp = await trx(contactsTableName)
+            .insert({
+                user_id: userResp.id,
+                phone_id: phoneResp.id,
+                contact_name: user.name,
+            })
+            .returning('id')
+            .then((rows) => rows[0]);
+
+        if (_.isNil(contactResp)) {
+            return left('errorInAddingContactInfo');
+        }
+
         trx.commit();
-        return right(userResp[0]);
+        return right({name: userResp.name, email: userResp.email, userId: userResp.id});
     } catch (error) {
         return left('unExpectedError');
     }
