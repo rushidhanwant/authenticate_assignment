@@ -10,12 +10,13 @@ import {
     SearchResponse,
     SpamCount,
     SpamDetails,
-    SpamError,
+    Error,
     UserSchema,
     contactInfo,
     searchQuery,
+    ContactResp,
 } from './types';
-import { markSpamFailed, searchContactFailed } from '../logEvents';
+import { addingContactFailed, markSpamFailed, searchContactFailed } from '../logEvents';
 import { getUserByPhoneNumber } from '../user/repo';
 
 const phoneNumberTableName = 'phone_numbers';
@@ -25,7 +26,7 @@ const userTableName = 'users';
 
 export const markNumberSpam = async (
     spamData: SpamDetails,
-): Promise<Either<SpamError, SpamCount>> => {
+): Promise<Either<Error, SpamCount>> => {
     try {
         const trx = await db.transaction();
 
@@ -98,7 +99,7 @@ export const checkIfNumberMarkedSpam = async (ids: Ids) => {
 
 export const checkIfNumberisOfRegisteredUser = async (
     phoneNumber: string,
-): Promise<Either<SpamError, UserSchema>> => {
+): Promise<Either<Error, UserSchema>> => {
     try {
         const user = await getUserByPhoneNumber(phoneNumber);
         if (_.isNil(user)) {
@@ -120,7 +121,7 @@ export const checkIfNumberisOfRegisteredUser = async (
 
 export const fetchContactBy = async (
     phoneNumber: string,
-): Promise<Either<SpamError, UserSchema>> => {
+): Promise<Either<Error, UserSchema>> => {
     try {
         const user = await getUserByPhoneNumber(phoneNumber);
         if (_.isNil(user)) {
@@ -140,7 +141,7 @@ export const fetchContactBy = async (
     }
 };
 
-export const addContacts = async (contactDetails: ContactDetails) => {
+export const addContacts = async (contactDetails: ContactDetails) : Promise<Either<Error,ContactResp>> => {
     try {
         const userId = contactDetails.userId;
         const contact = contactDetails.contact;
@@ -176,14 +177,14 @@ export const addContacts = async (contactDetails: ContactDetails) => {
 
         return right({ contactId: contactResp });
     } catch (err) {
-        markSpamFailed(err);
+        addingContactFailed(err);
         return left('unExpectedError');
     }
 };
 
 export const fetchContacts = async (
     serchQuery: searchQuery,
-): Promise<Either<SpamError, SearchResponse>> => {
+): Promise<Either<Error, SearchResponse>> => {
     const { query, userId } = serchQuery;
     const lowerCaseQuery = query.toLowerCase();
     try {
@@ -229,7 +230,7 @@ export const fetchContacts = async (
 
 export const fetchContactDetails = async (
     contactId: ContactIds,
-): Promise<Either<SpamError, contactInfo>> => {
+): Promise<Either<Error, contactInfo>> => {
     try {
         const contactResp = await db(phoneNumberTableName)
             .join(
@@ -258,7 +259,7 @@ export const fetchContactDetails = async (
 export const checkIfNumberInContactList = async (
     registeredUserId: number,
     contactNumber: String,
-): Promise<Either<SpamError, ContactInfoWithEmail>> => {
+): Promise<Either<Error, ContactInfoWithEmail>> => {
     try {
         const contactResp = await db(phoneNumberTableName)
             .join(

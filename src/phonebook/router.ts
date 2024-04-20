@@ -19,7 +19,7 @@ export default function (server: Hapi.Server) {
                 if (isLeft(response)) {
                     return h.response({ errors: response.left }).code(400);
                 }
-                return h.response({ user: response.right }).code(200);
+                return h.response({ data: response.right }).code(200);
             },
             tags: ['api', 'phonebook', 'spam'],
             validate: {
@@ -44,7 +44,7 @@ export default function (server: Hapi.Server) {
                 if (isLeft(response)) {
                     return h.response({ errors: response.left }).code(400);
                 }
-                return h.response({ user: response.right }).code(200);
+                return h.response({ data: response.right }).code(200);
             },
             tags: ['api', 'phonebook', 'search'],
             validate: {
@@ -69,7 +69,7 @@ export default function (server: Hapi.Server) {
                 if (isLeft(response)) {
                     return h.response({ errors: response.left }).code(400);
                 }
-                return h.response({ user: response.right }).code(200);
+                return h.response({ data: response.right }).code(200);
             },
             tags: ['api', 'phonebook', 'contact details'],
             validate: {

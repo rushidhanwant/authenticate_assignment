@@ -5,7 +5,7 @@ import * as repo from './repo';
 import {
     SpamData,
     SpamCount,
-    SpamError,
+    Error,
     SpamDetails,
     PhoneNumberSchema,
     Ids,
@@ -70,7 +70,7 @@ export const checkIfNumberIsOfRegisteredUser = async (
 
 export const markNumberSpam = async (
     spamData: SpamData,
-): Promise<Either<SpamError, SpamCount>> => {
+): Promise<Either<Error, SpamCount>> => {
     try {
         const numberDetails = await getOrAddPhoneNumber(spamData.phoneNumber);
         const isNumberMarkedSpam = await checkIfNumberisAlreadyMarkedByUser({
@@ -104,10 +104,9 @@ export const markNumberSpam = async (
     }
 };
 
-// export const checkIf;
 export const searchContact = async (
     serchQuery: searchQuery,
-): Promise<Either<SpamError, SearchResponse>> => {
+): Promise<Either<Error, SearchResponse>> => {
     const regexp = new RegExp('/^[0-9]+$/');
     const ifValidNumber =
         serchQuery.query.length === 10 &&
@@ -132,7 +131,7 @@ export const searchContact = async (
 export const getContactDetails = async (
     contactDetails: ContactIds,
     userId: number,
-): Promise<Either<SpamError, ContactInfoWithEmail>> => {
+): Promise<Either<Error, ContactInfoWithEmail>> => {
     const contactResp = await repo.fetchContactDetails(contactDetails);
 
     if (isLeft(contactResp)) {

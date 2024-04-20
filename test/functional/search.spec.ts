@@ -45,7 +45,7 @@ describe('Search contacts', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user[0].number).to.eql(user.phoneNumber);
+        expect(response.result.data[0].number).to.eql(user.phoneNumber);
     });
 
     it('user should be able to search contacts by name', async () => {
@@ -72,7 +72,7 @@ describe('Search contacts', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user[0].number).to.eql(user.phoneNumber);
+        expect(response.result.data[0].number).to.eql(user.phoneNumber);
     });
 
     it('user should be able to search contacts by partial name', async () => {
@@ -100,7 +100,7 @@ describe('Search contacts', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user[0].number).to.eql(user.phoneNumber);
+        expect(response.result.data[0].number).to.eql(user.phoneNumber);
     });
 
     it('user should be able to search contacts by partial number', async () => {
@@ -128,7 +128,7 @@ describe('Search contacts', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user[0].number).to.eql(user.phoneNumber);
+        expect(response.result.data[0].number).to.eql(user.phoneNumber);
     });
 
     it('user should be able see contact details', async () => {
@@ -156,10 +156,10 @@ describe('Search contacts', async () => {
             },
         });
         expect(searchResponse.statusCode).to.eql(200);
-        expect(searchResponse.result.user[0].number).to.eql(user.phoneNumber);
+        expect(searchResponse.result.data[0].number).to.eql(user.phoneNumber);
 
         const { registered_contact_user_id, phone_id } =
-            searchResponse.result.user[0];
+            searchResponse.result.data[0];
 
         const response = await testEnv.server.inject({
             method: 'post',
@@ -221,10 +221,10 @@ describe('Search contacts', async () => {
             },
         });
         expect(searchResponse.statusCode).to.eql(200);
-        expect(searchResponse.result.user[0].number).to.eql(user2.phoneNumber);
+        expect(searchResponse.result.data[0].number).to.eql(user2.phoneNumber);
 
         const { registered_contact_user_id, phone_id } =
-            searchResponse.result.user[0];
+            searchResponse.result.data[0];
 
         // get new user details
         const response = await testEnv.server.inject({
@@ -239,7 +239,7 @@ describe('Search contacts', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user.number).to.eql(user2.phoneNumber);
-        expect(response.result.user.email).to.eql(user2.email);
+        expect(response.result.data.number).to.eql(user2.phoneNumber);
+        expect(response.result.data.email).to.eql(user2.email);
     });
 });

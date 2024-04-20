@@ -6,7 +6,8 @@ export type UserEvents =
     | 'user-account-creation-failed'
     | 'user-login-successful'
     | 'user-login-failed'
-    | 'search-contact-failed';
+    | 'search-contact-failed'
+    | 'adding-contact-failed';
 
 export type PhoneBookEvents = 'mark-spam-failed';
 
@@ -40,6 +41,10 @@ export function userLoggedInFailed(reason) {
 
 export function markSpamFailed(reason) {
     logEvent('mark-spam-failed', { reason });
+}
+
+export function addingContactFailed(reason) {
+    logEvent('adding-contact-failed', { reason });
 }
 
 export function searchContactFailed(reason) {

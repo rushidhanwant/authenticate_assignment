@@ -34,13 +34,14 @@ export interface SpamDetails {
     phoneId: number;
 }
 
-export type SpamError =
+export type Error =
     | 'unExpectedError'
     | 'errorInSavingPhoneNumber'
     | 'errorInAddingSpamInfo'
     | 'alreadyMarkedSpam'
     | 'numberIsNotOfRegisteredUser'
-    | 'numberIsNotInContactList';
+    | 'numberIsNotInContactList'
+    | 'errorInAddingContactInfo';
 
 export type Response = String;
 export type SpamCount = {
@@ -96,4 +97,8 @@ export interface contactInfo {
 
 export interface ContactInfoWithEmail extends contactInfo {
     email?: String;
+}
+
+export type ContactResp = {
+    contactId: Number;
 }
