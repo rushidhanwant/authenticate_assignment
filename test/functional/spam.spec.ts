@@ -32,8 +32,7 @@ describe('Spam', async () => {
         expect(response.statusCode).to.eql(401);
     });
 
-    it.only('registered user should be able to mark a number spam', async () => {
-
+    it('registered user should be able to mark a number spam', async () => {
         const loginResponse = await testEnv.server.inject({
             method: 'post',
             url: '/auth/login',
@@ -43,7 +42,9 @@ describe('Spam', async () => {
             },
         });
         expect(loginResponse.statusCode).to.eql(200);
-        expect(loginResponse.result).to.be.an('object').that.has.all.keys('authToken', 'userId');
+        expect(loginResponse.result)
+            .to.be.an('object')
+            .that.has.all.keys('authToken', 'userId');
 
         const authToken = loginResponse.result.authToken;
 
@@ -59,5 +60,49 @@ describe('Spam', async () => {
             },
         });
         expect(response.statusCode).to.eql(200);
+    });
+
+    it('should return error if user has already marked a number spam', async () => {
+        const loginResponse = await testEnv.server.inject({
+            method: 'post',
+            url: '/auth/login',
+            payload: {
+                phoneNumber: user.phoneNumber,
+                password: user.password,
+            },
+        });
+        expect(loginResponse.statusCode).to.eql(200);
+        expect(loginResponse.result)
+            .to.be.an('object')
+            .that.has.all.keys('authToken', 'userId');
+
+        const authToken = loginResponse.result.authToken;
+
+        const response = await testEnv.server.inject({
+            method: 'post',
+            url: '/phonebook/number/markspam',
+            headers: {
+                authorization: authToken,
+            },
+            payload: {
+                phoneNumber: data.phoneNumber,
+                spam: true,
+            },
+        });
+        expect(response.statusCode).to.eql(200);
+
+        const responseError = await testEnv.server.inject({
+            method: 'post',
+            url: '/phonebook/number/markspam',
+            headers: {
+                authorization: authToken,
+            },
+            payload: {
+                phoneNumber: data.phoneNumber,
+                spam: true,
+            },
+        });
+        expect(responseError.statusCode).to.eql(400);
+        expect(responseError.result.errors).to.eql('alreadyMarkedSpam');
     });
 });

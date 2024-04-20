@@ -37,6 +37,6 @@ describe('User API', async () => {
             payload: newUser,
         });
         expect(response.statusCode).to.eql(200);
-        expect(response.result.user).to.eql('John');
+        expect(response.result.user.name).to.eql(newUser.name);
     });
 });
