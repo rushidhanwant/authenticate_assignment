@@ -1,4 +1,4 @@
-# Hapi JS
+# Authenticate Assignment
 ## INSTALATION
 
 ### Install Nodejs

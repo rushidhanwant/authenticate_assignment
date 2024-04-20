@@ -101,4 +101,4 @@ export interface ContactInfoWithEmail extends contactInfo {
 
 export type ContactResp = {
     contactId: Number;
-}
+};

@@ -28,6 +28,13 @@ export async function getUserByPhoneNumber(number: string) {
         .first();
 }
 
+export async function getPhoneNumberDetails(number: string) {
+    return db(phoneNumberTableName)
+        .select('*')
+        .where({ number: number })
+        .first();
+}
+
 export async function getUserPasswordByUserId(userId) {
     return db(userTableName).select('*').where({ id: userId }).first();
 }
@@ -41,12 +48,17 @@ export async function updateUserDetails(userId, newDetails) {
 export async function saveUser(
     user: NewUser,
 ): Promise<Either<UserRegistrationError, ResponseUser>> {
-    // check if user already exists by phone number
     try {
+        // check if user already exists by phone number
         const existingUser = await getUserByPhoneNumber(user.phoneNumber);
         if (!_.isNil(existingUser)) {
             return left('userAlreadyExist');
         }
+
+        let phoneResp;
+
+        // check if phone number already exists
+        phoneResp = await getPhoneNumberDetails(user.phoneNumber);
 
         const trx = await db.transaction();
 
@@ -56,14 +68,16 @@ export async function saveUser(
             return left('passwordHashingFailed');
         }
 
-        const phoneResp = await trx(phoneNumberTableName)
-            .insert({ number: user.phoneNumber })
-            .returning('*')
-            .then((rows) => rows[0]);
-
         if (_.isNil(phoneResp)) {
-            trx.rollback();
-            return left('errorInSavingPhoneNumber');
+            phoneResp = await trx(phoneNumberTableName)
+                .insert({ number: user.phoneNumber })
+                .returning('*')
+                .then((rows) => rows[0]);
+
+            if (_.isNil(phoneResp)) {
+                trx.rollback();
+                return left('errorInSavingPhoneNumber');
+            }
         }
 
         const userResp = await trx(userTableName)

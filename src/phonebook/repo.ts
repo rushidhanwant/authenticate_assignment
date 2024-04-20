@@ -16,7 +16,11 @@ import {
     searchQuery,
     ContactResp,
 } from './types';
-import { addingContactFailed, markSpamFailed, searchContactFailed } from '../logEvents';
+import {
+    addingContactFailed,
+    markSpamFailed,
+    searchContactFailed,
+} from '../logEvents';
 import { getUserByPhoneNumber } from '../user/repo';
 
 const phoneNumberTableName = 'phone_numbers';
@@ -141,7 +145,9 @@ export const fetchContactBy = async (
     }
 };
 
-export const addContacts = async (contactDetails: ContactDetails) : Promise<Either<Error,ContactResp>> => {
+export const addContacts = async (
+    contactDetails: ContactDetails,
+): Promise<Either<Error, ContactResp>> => {
     try {
         const userId = contactDetails.userId;
         const contact = contactDetails.contact;

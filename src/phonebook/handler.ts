@@ -107,15 +107,16 @@ export const markNumberSpam = async (
 export const searchContact = async (
     serchQuery: searchQuery,
 ): Promise<Either<Error, SearchResponse>> => {
-    const regexp = new RegExp('/^[0-9]+$/');
+    const regexp = new RegExp('^[0-9]+$');
     const ifValidNumber =
-        serchQuery.query.length === 10 &&
+        serchQuery.query.length == 10 &&
         regexp.test(serchQuery.query as string);
-
+        
     if (ifValidNumber) {
         const user = await repo.checkIfNumberisOfRegisteredUser(
             serchQuery.query as string,
         );
+        
         if (!isLeft(user)) {
             const { email, ...restData } = user.right;
             return right([restData]);
