@@ -8,6 +8,19 @@ export const spamSchema = Joi.object({
     spam: Joi.boolean().required(),
 });
 
+export const contactDetailsSchema = Joi.object({
+    registeredContactUserId: Joi.number().required(),
+    phoneId: Joi.number().required(),
+});
+
+export const searchQuerySchema = Joi.object({
+    query: Joi.string().required(),
+});
+
+export interface ContactIds {
+    registeredContactUserId: number;
+    phoneId: number;
+}
 export interface SpamData {
     phoneNumber: string;
     spam: string;
@@ -21,12 +34,13 @@ export interface SpamDetails {
     phoneId: number;
 }
 
-export type SpamError = 
-| 'unExpectedError'
-| 'errorInSavingPhoneNumber'
-| 'errorInAddingSpamInfo'
-| 'alreadyMarkedSpam'
-;
+export type SpamError =
+    | 'unExpectedError'
+    | 'errorInSavingPhoneNumber'
+    | 'errorInAddingSpamInfo'
+    | 'alreadyMarkedSpam'
+    | 'numberIsNotOfRegisteredUser'
+    | 'numberIsNotInContactList';
 
 export type Response = String;
 export type SpamCount = {
@@ -44,13 +58,42 @@ export interface PhoneNumberSchema {
 export type Contact = {
     contactName: string;
     phoneNumber: string;
-}
-export interface ContactDetails{
-    contact : Contact;
+};
+export interface ContactDetails {
+    contact: Contact;
     userId: Number;
 }
 
-export interface Ids{
+export interface Ids {
     userId: Number;
     phoneId: Number;
+}
+
+export interface searchQuery {
+    query: string;
+    userId: Number;
+}
+
+export interface SearchData {
+    number: String;
+    spam_count: Number;
+    phone_id: Number;
+    name: String;
+    registered_contact_user_id: Number;
+}
+
+export interface UserSchema extends SearchData {
+    email : String;
+}
+
+export type SearchResponse = SearchData[]
+
+export interface contactInfo {
+  number: String,
+  spam_count: Number,
+  name: String
+}
+
+export interface ContactInfoWithEmail extends contactInfo {
+    email?: String
 }

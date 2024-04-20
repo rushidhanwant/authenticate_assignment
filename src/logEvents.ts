@@ -5,14 +5,12 @@ export type UserEvents =
     | 'user-account-created'
     | 'user-account-creation-failed'
     | 'user-login-successful'
-    | 'user-login-failed';
+    | 'user-login-failed'
+    | 'search-contact-failed';
 
-export type PhoneBookEvents =
-    | 'mark-spam-failed';
+export type PhoneBookEvents = 'mark-spam-failed';
 
-export type EventName = 
-    | UserEvents 
-    | PhoneBookEvents;
+export type EventName = UserEvents | PhoneBookEvents;
 
 export function logEvent(
     eventName: EventName,
@@ -42,4 +40,8 @@ export function userLoggedInFailed(reason) {
 
 export function markSpamFailed(reason) {
     logEvent('mark-spam-failed', { reason });
+}
+
+export function searchContactFailed(reason) {
+    logEvent('search-contact-failed', { reason });
 }
