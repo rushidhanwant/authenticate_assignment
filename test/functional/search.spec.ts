@@ -91,7 +91,7 @@ describe('Search contacts', async () => {
 
         const authToken = loginResponse.result.authToken;
 
-        const partialNumber = user.name.slice(0,3);
+        const partialNumber = user.name.slice(0, 3);
         const response = await testEnv.server.inject({
             method: 'get',
             url: `/phonebook/search/number?query=${partialNumber}`,
@@ -119,7 +119,7 @@ describe('Search contacts', async () => {
 
         const authToken = loginResponse.result.authToken;
 
-        const partialNumber = user.phoneNumber.slice(0,3);
+        const partialNumber = user.phoneNumber.slice(0, 3);
         const response = await testEnv.server.inject({
             method: 'get',
             url: `/phonebook/search/number?query=${partialNumber}`,
@@ -147,7 +147,7 @@ describe('Search contacts', async () => {
 
         const authToken = loginResponse.result.authToken;
 
-        const partialNumber = user.phoneNumber.slice(0,3);
+        const partialNumber = user.phoneNumber.slice(0, 3);
         const searchResponse = await testEnv.server.inject({
             method: 'get',
             url: `/phonebook/search/number?query=${partialNumber}`,
@@ -158,14 +158,15 @@ describe('Search contacts', async () => {
         expect(searchResponse.statusCode).to.eql(200);
         expect(searchResponse.result.user[0].number).to.eql(user.phoneNumber);
 
-        const {registered_contact_user_id,  phone_id} = searchResponse.result.user[0];
+        const { registered_contact_user_id, phone_id } =
+            searchResponse.result.user[0];
 
         const response = await testEnv.server.inject({
             method: 'post',
             url: '/phonebook/contact-details',
             payload: {
                 phoneId: phone_id,
-                registeredContactUserId: registered_contact_user_id
+                registeredContactUserId: registered_contact_user_id,
             },
             headers: {
                 authorization: authToken,
@@ -175,7 +176,6 @@ describe('Search contacts', async () => {
     });
 
     it('user should be able see email if registered user has user in his contact list', async () => {
-
         //register new user
         const user2 = F.fakeUser({});
         const userIdResponse2 = await userRepo.saveUser(user2);
@@ -201,18 +201,18 @@ describe('Search contacts', async () => {
 
         const authToken = loginResponse.result.authToken;
 
-        const contactDetails = { 
+        const contactDetails = {
             contact: {
                 contactName: user.name,
-                phoneNumber: user.phoneNumber
+                phoneNumber: user.phoneNumber,
             },
-            userId:  userId2,
+            userId: userId2,
         };
 
         // adding contact of new user into contact list of old user
-        const contactResp =  await addContacts(contactDetails);
+        const contactResp = await addContacts(contactDetails);
 
-        // search new user 
+        // search new user
         const searchResponse = await testEnv.server.inject({
             method: 'get',
             url: `/phonebook/search/number?query=${user2.phoneNumber}`,
@@ -223,7 +223,8 @@ describe('Search contacts', async () => {
         expect(searchResponse.statusCode).to.eql(200);
         expect(searchResponse.result.user[0].number).to.eql(user2.phoneNumber);
 
-        const {registered_contact_user_id,  phone_id} = searchResponse.result.user[0];
+        const { registered_contact_user_id, phone_id } =
+            searchResponse.result.user[0];
 
         // get new user details
         const response = await testEnv.server.inject({
@@ -231,7 +232,7 @@ describe('Search contacts', async () => {
             url: '/phonebook/contact-details',
             payload: {
                 phoneId: phone_id,
-                registeredContactUserId: registered_contact_user_id
+                registeredContactUserId: registered_contact_user_id,
             },
             headers: {
                 authorization: authToken,

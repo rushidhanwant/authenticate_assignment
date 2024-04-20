@@ -96,49 +96,49 @@ export const checkIfNumberMarkedSpam = async (ids: Ids) => {
         .first();
 };
 
-export const checkIfNumberisOfRegisteredUser = async (phoneNumber: string): Promise<Either<SpamError, UserSchema>> => {
-    try{
-            const user = await getUserByPhoneNumber(phoneNumber);
-        if(_.isNil(user)){
-            return left('numberIsNotOfRegisteredUser')
+export const checkIfNumberisOfRegisteredUser = async (
+    phoneNumber: string,
+): Promise<Either<SpamError, UserSchema>> => {
+    try {
+        const user = await getUserByPhoneNumber(phoneNumber);
+        if (_.isNil(user)) {
+            return left('numberIsNotOfRegisteredUser');
         }
         const respObj: UserSchema = {
-            phone_id : user.phone_id,
-            email : user.email,
-            name : user.name,
-            number : user.number,
-            spam_count : user.spam_count,
-            registered_contact_user_id : user.id
-            
-        }
-        return right(respObj)
-    }
-    catch(err){
+            phone_id: user.phone_id,
+            email: user.email,
+            name: user.name,
+            number: user.number,
+            spam_count: user.spam_count,
+            registered_contact_user_id: user.id,
+        };
+        return right(respObj);
+    } catch (err) {
         return left('unExpectedError');
     }
-}
+};
 
-export const fetchContactBy = async (phoneNumber: string): Promise<Either<SpamError, UserSchema>> => {
-    try{
-            const user = await getUserByPhoneNumber(phoneNumber);
-        if(_.isNil(user)){
-            return left('numberIsNotOfRegisteredUser')
+export const fetchContactBy = async (
+    phoneNumber: string,
+): Promise<Either<SpamError, UserSchema>> => {
+    try {
+        const user = await getUserByPhoneNumber(phoneNumber);
+        if (_.isNil(user)) {
+            return left('numberIsNotOfRegisteredUser');
         }
         const respObj: UserSchema = {
-            phone_id : user.phone_id,
-            email : user.email,
-            name : user.name,
-            number : user.number,
-            spam_count : user.spam_count,
-            registered_contact_user_id : user.id
-            
-        }
-        return right(respObj)
-    }
-    catch(err){
+            phone_id: user.phone_id,
+            email: user.email,
+            name: user.name,
+            number: user.number,
+            spam_count: user.spam_count,
+            registered_contact_user_id: user.id,
+        };
+        return right(respObj);
+    } catch (err) {
         return left('unExpectedError');
     }
-}
+};
 
 export const addContacts = async (contactDetails: ContactDetails) => {
     try {
@@ -181,92 +181,113 @@ export const addContacts = async (contactDetails: ContactDetails) => {
     }
 };
 
-export const fetchContacts = async (serchQuery: searchQuery): Promise<Either<SpamError, SearchResponse>> => {
-    const {query, userId} = serchQuery;
+export const fetchContacts = async (
+    serchQuery: searchQuery,
+): Promise<Either<SpamError, SearchResponse>> => {
+    const { query, userId } = serchQuery;
     const lowerCaseQuery = query.toLowerCase();
-    try{
+    try {
         const resp = await db
-        .select('*')
-        .from(phoneNumberTableName)
-        .rightJoin(contactsTableName,
-            `${phoneNumberTableName}.id`,
-            '=',
-            `${contactsTableName}.phone_id`,)
-        .whereRaw('lower("number") like ?', [`%${lowerCaseQuery}%`])
-        .orWhereRaw('lower("contact_name") like ?', [`%${lowerCaseQuery}%`])
-        .orderByRaw(`
+            .select('*')
+            .from(phoneNumberTableName)
+            .rightJoin(
+                contactsTableName,
+                `${phoneNumberTableName}.id`,
+                '=',
+                `${contactsTableName}.phone_id`,
+            )
+            .whereRaw('lower("number") like ?', [`%${lowerCaseQuery}%`])
+            .orWhereRaw('lower("contact_name") like ?', [`%${lowerCaseQuery}%`])
+            .orderByRaw(
+                `
             CASE 
             WHEN lower("number") LIKE '${lowerCaseQuery}%' THEN 1
             WHEN lower("contact_name") LIKE '${lowerCaseQuery}%' THEN 1
             ELSE 2
             END
-        `)
-        .orderByRaw('lower("number")')
-        .orderByRaw('lower("contact_name")')
-        .then((rows) => rows.map(row => {
-            return {
-                number: row.number,
-                spam_count: row.spam_count,
-                phone_id: row.phone_id,
-                registered_contact_user_id: row.user_id, // registered contact user id
-                name: row.contact_name
-            }
-        } ))
+        `,
+            )
+            .orderByRaw('lower("number")')
+            .orderByRaw('lower("contact_name")')
+            .then((rows) =>
+                rows.map((row) => {
+                    return {
+                        number: row.number,
+                        spam_count: row.spam_count,
+                        phone_id: row.phone_id,
+                        registered_contact_user_id: row.user_id, // registered contact user id
+                        name: row.contact_name,
+                    };
+                }),
+            );
         return right(resp);
     } catch (err) {
-        searchContactFailed(err)
+        searchContactFailed(err);
         return left('unExpectedError');
     }
-}
+};
 
-export const fetchContactDetails = async (contactId:ContactIds): Promise<Either<SpamError,contactInfo>> =>{
-    try{
+export const fetchContactDetails = async (
+    contactId: ContactIds,
+): Promise<Either<SpamError, contactInfo>> => {
+    try {
         const contactResp = await db(phoneNumberTableName)
-        .join(
-            contactsTableName,
-            `${phoneNumberTableName}.id`,
-            '=',
-            `${contactsTableName}.phone_id`,
-        )
-        .select('*')
-        .where({ user_id : contactId.registeredContactUserId, phone_id : contactId.phoneId})
-        .first();
+            .join(
+                contactsTableName,
+                `${phoneNumberTableName}.id`,
+                '=',
+                `${contactsTableName}.phone_id`,
+            )
+            .select('*')
+            .where({
+                user_id: contactId.registeredContactUserId,
+                phone_id: contactId.phoneId,
+            })
+            .first();
         const respObj = {
             number: contactResp.number,
             spam_count: contactResp.spam_count,
-            name: contactResp.contact_name
-        }
-        return right(respObj)
+            name: contactResp.contact_name,
+        };
+        return right(respObj);
     } catch (err) {
         return left('unExpectedError');
     }
-}
+};
 
-export const checkIfNumberInContactList = async (registeredUserId: number, contactNumber: String): Promise<Either<SpamError, ContactInfoWithEmail>> =>{
-    try{
+export const checkIfNumberInContactList = async (
+    registeredUserId: number,
+    contactNumber: String,
+): Promise<Either<SpamError, ContactInfoWithEmail>> => {
+    try {
         const contactResp = await db(phoneNumberTableName)
-        .join(
-            contactsTableName,
-            `${phoneNumberTableName}.id`,
-            '=',
-            `${contactsTableName}.phone_id`,
-        )
-        .join(userTableName, `${contactsTableName}.user_id`, '=',`${userTableName}.id`)
-        .select('*')
-        .where({ user_id : registeredUserId, number : contactNumber})
-        .first()
+            .join(
+                contactsTableName,
+                `${phoneNumberTableName}.id`,
+                '=',
+                `${contactsTableName}.phone_id`,
+            )
+            .join(
+                userTableName,
+                `${contactsTableName}.user_id`,
+                '=',
+                `${userTableName}.id`,
+            )
+            .select('*')
+            .where({ user_id: registeredUserId, number: contactNumber })
+            .first();
 
         const respObj = {
             number: contactResp.number,
             spam_count: contactResp.spam_count,
             name: contactResp.contact_name,
-            email: contactResp.email
+            email: contactResp.email,
+        };
+        if (_.isEmpty(contactResp)) {
+            return left('numberIsNotInContactList');
         }
-        if(_.isEmpty(contactResp)){
-            return left('numberIsNotInContactList')
-        }
-       return right(respObj)
-    }catch (err) {
+        return right(respObj);
+    } catch (err) {
         return left('unExpectedError');
     }
-}
+};

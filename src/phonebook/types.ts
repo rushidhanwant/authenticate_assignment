@@ -83,17 +83,17 @@ export interface SearchData {
 }
 
 export interface UserSchema extends SearchData {
-    email : String;
+    email: String;
 }
 
-export type SearchResponse = SearchData[]
+export type SearchResponse = SearchData[];
 
 export interface contactInfo {
-  number: String,
-  spam_count: Number,
-  name: String
+    number: String;
+    spam_count: Number;
+    name: String;
 }
 
 export interface ContactInfoWithEmail extends contactInfo {
-    email?: String
+    email?: String;
 }

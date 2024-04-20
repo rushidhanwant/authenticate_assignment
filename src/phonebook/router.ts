@@ -61,10 +61,10 @@ export default function (server: Hapi.Server) {
         options: {
             handler: async (request, h) => {
                 const contactDetails = request.payload;
-                const userId = request.auth.credentials.userId; 
+                const userId = request.auth.credentials.userId;
                 const response = await phonebookHandler.getContactDetails(
                     contactDetails,
-                    userId
+                    userId,
                 );
                 if (isLeft(response)) {
                     return h.response({ errors: response.left }).code(400);

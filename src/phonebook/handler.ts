@@ -105,44 +105,56 @@ export const markNumberSpam = async (
 };
 
 // export const checkIf;
-export const searchContact = async (serchQuery: searchQuery): Promise<Either<SpamError,SearchResponse>> => {
-
+export const searchContact = async (
+    serchQuery: searchQuery,
+): Promise<Either<SpamError, SearchResponse>> => {
     const regexp = new RegExp('/^[0-9]+$/');
-    const ifValidNumber = (serchQuery.query.length === 10 && regexp.test(serchQuery.query as string));
+    const ifValidNumber =
+        serchQuery.query.length === 10 &&
+        regexp.test(serchQuery.query as string);
 
-    if (ifValidNumber){
-        const user = await repo.checkIfNumberisOfRegisteredUser(serchQuery.query as string);
-        if(!isLeft(user)) {
-            const {email, ...restData} = user.right
+    if (ifValidNumber) {
+        const user = await repo.checkIfNumberisOfRegisteredUser(
+            serchQuery.query as string,
+        );
+        if (!isLeft(user)) {
+            const { email, ...restData } = user.right;
             return right([restData]);
-        } 
+        }
     }
     const contacts = await repo.fetchContacts(serchQuery);
-    if(isLeft(contacts)) {
-        return contacts
+    if (isLeft(contacts)) {
+        return contacts;
     }
     return contacts;
 };
 
-export const getContactDetails = async (contactDetails: ContactIds, userId: number): Promise<Either<SpamError,ContactInfoWithEmail>> => {
-
+export const getContactDetails = async (
+    contactDetails: ContactIds,
+    userId: number,
+): Promise<Either<SpamError, ContactInfoWithEmail>> => {
     const contactResp = await repo.fetchContactDetails(contactDetails);
 
-    if(isLeft(contactResp)){
+    if (isLeft(contactResp)) {
         return contactResp;
     }
 
-    const user = await repo.checkIfNumberisOfRegisteredUser(contactResp.right.number as string);
+    const user = await repo.checkIfNumberisOfRegisteredUser(
+        contactResp.right.number as string,
+    );
 
-    if(isLeft(user)) {
+    if (isLeft(user)) {
         return contactResp;
     }
-    const {registered_contact_user_id, number} = user.right;
+    const { registered_contact_user_id, number } = user.right;
 
-    const data = await repo.checkIfNumberInContactList(registered_contact_user_id as number, number);
+    const data = await repo.checkIfNumberInContactList(
+        registered_contact_user_id as number,
+        number,
+    );
 
-    if(isLeft(data)){
+    if (isLeft(data)) {
         return contactResp;
     }
     return data;
-}
+};

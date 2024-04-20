@@ -16,7 +16,7 @@
     "prettier-fix": "npx prettier --write  src test",
     "seed:make": "npx knex seed:make",
     "seed:run": "npx knex seed:run",
-    "test": "export NODE_ENV=Test && npx mocha -r ts-node/register --exit --timeout 5000000 test/**/*.spec.ts -- --silent",
+    "test": "export NODE_ENV=Test && npx mocha -r ts-node/register --exit --timeout 5000 test/**/*.spec.ts -- --silent",
     "test:cov": "export NODE_ENV=Test && npx nyc --reporter=text mocha -r ts-node/register  --exit --timeout 5000 test/**/*.spec.ts -- --silent && npx nyc report --reporter=lcovonly",
     "test:watch": "export NODE_ENV=Test && npx mocha -w  --watch-files src/ test/ -r ts-node/register test/**/*.spec.ts",
     "test:scan": "sonar-scanner"

@@ -29,4 +29,4 @@ export type ResponseUser = {
     name: String;
     email: String;
     userId: Number;
-}
+};

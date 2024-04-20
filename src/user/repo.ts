@@ -95,7 +95,11 @@ export async function saveUser(
         }
 
         trx.commit();
-        return right({name: userResp.name, email: userResp.email, userId: userResp.id});
+        return right({
+            name: userResp.name,
+            email: userResp.email,
+            userId: userResp.id,
+        });
     } catch (error) {
         return left('unExpectedError');
     }
