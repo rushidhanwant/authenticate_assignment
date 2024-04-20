@@ -25,6 +25,7 @@ export type SpamError =
 | 'unExpectedError'
 | 'errorInSavingPhoneNumber'
 | 'errorInAddingSpamInfo'
+| 'alreadyMarkedSpam'
 ;
 
 export type Response = String;
@@ -38,4 +39,18 @@ export interface PhoneNumberSchema {
     updated_at: string;
     number: number;
     spam_count: number;
+}
+
+export type Contact = {
+    contactName: string;
+    phoneNumber: string;
+}
+export interface ContactDetails{
+    contact : Contact;
+    userId: Number;
+}
+
+export interface Ids{
+    userId: Number;
+    phoneId: Number;
 }
