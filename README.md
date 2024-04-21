@@ -1,4 +1,5 @@
 # Authenticate Assignment
+
 ## INSTALATION
 
 ### Install Nodejs
@@ -64,5 +65,81 @@ npm run test:cov
 
 ```
 npm run db:make-migrate <migration_name>
+```
+## Directory structure
+
+    .
+    ├── src
+    │   ├── authentication
+    │   │   ├── handler.ts
+    │   │   ├── repo.ts
+    │   │   ├── router.ts
+    │   │   └── stypes.ts
+    │   ├── phonebook
+    │   │   ├── handler.ts
+    │   │   ├── repo.ts
+    │   │   ├── router.ts
+    │   │   └── stypes.ts
+    │   ├── user
+    │   │   ├── handler.ts
+    │   │   ├── repo.ts
+    │   │   ├── router.ts
+    │   │   └── stypes.ts
+    │   ├── diagnostic
+    │   │   └── router.ts
+    │   ├── config.ts
+    │   ├── db.ts
+    │   ├── index.ts
+    │   └── server.ts
+    ├── test
+    │   ├── env
+    │   │   ├── factories.ts
+    │   │   └── testEnvironment.ts
+    │   ├── functional
+    │   │   ├── auth.spec.ts
+    │   │   ├── search.spec.ts
+    │   │   ├── spam.spec.ts
+    │   │   └── userSignup.spec.ts
+    │   ├── nonfunctional
+    │   │   ├── diagnostic.spec.ts
+    │   │   └── swagger.spec.ts
+    │   └── dummy.ts
+    ├── Dockerfile
+    ├── setup_db_sh
+    ├── .env.sample
+    └── README.md
+    
+    1. authentication - Contains Api for login are in this folder.
+       route.ts - Contains all the routes 
+       handler.ts - contains buisness logic.
+       repo.ts - contains handlers to fetch/persist data in the db
+       type.ts - contains all the types.
+    2. phonebook - Contains Apis for Searching, Spam and Contact detaiils
+    3. user - Contains APi for sign up
+    4. config.ts - Contains constants which can be configured based on environment
+    5. db.ts - Knex.js setup 
+    6. index.ts - Initialise the server
+    7. server.ts - Server configuration and setup.
+    8. test -  This folder contains all the tests.
+    9. env/testEnvironment.ts - Test server setup
+    10. functional - Unit tests for auth, serach, spam, and user
+    11. dummy.ts - Script for genrating dummy contact list
+    11. setup_db_sh - Script to create database 
+
+## Technology Stack
+
+```
+NodeJS Framework
+- Hapi.js
+
+Orm/Query Builder
+- Knex.js
+
+Database
+- PostgreSQL
+
+Testing Framework
+- Mocha
+- Chai (assertion library)
 ```
 
