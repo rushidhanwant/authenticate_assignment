@@ -11,10 +11,6 @@ import { NewUser, ResponseUser, UserRegistrationError } from './types';
 
 import Bcrypt from 'bcrypt';
 
-export async function getUserByEmail(email: string) {
-    return db(userTableName).select('*').where({ email }).first();
-}
-
 export async function getUserByPhoneNumber(number: string) {
     return db(phoneNumberTableName)
         .join(
@@ -33,16 +29,6 @@ export async function getPhoneNumberDetails(number: string) {
         .select('*')
         .where({ number: number })
         .first();
-}
-
-export async function getUserPasswordByUserId(userId) {
-    return db(userTableName).select('*').where({ id: userId }).first();
-}
-
-export async function updateUserDetails(userId, newDetails) {
-    return db(userTableName)
-        .update({ ...newDetails })
-        .where({ id: userId });
 }
 
 export async function saveUser(

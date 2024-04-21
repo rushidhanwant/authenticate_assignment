@@ -123,28 +123,6 @@ export const checkIfNumberisOfRegisteredUser = async (
     }
 };
 
-export const fetchContactBy = async (
-    phoneNumber: string,
-): Promise<Either<Error, UserSchema>> => {
-    try {
-        const user = await getUserByPhoneNumber(phoneNumber);
-        if (_.isNil(user)) {
-            return left('numberIsNotOfRegisteredUser');
-        }
-        const respObj: UserSchema = {
-            phone_id: user.phone_id,
-            email: user.email,
-            name: user.name,
-            number: user.number,
-            spam_count: user.spam_count,
-            registered_contact_user_id: user.id,
-        };
-        return right(respObj);
-    } catch (err) {
-        return left('unExpectedError');
-    }
-};
-
 export const addContacts = async (
     contactDetails: ContactDetails,
 ): Promise<Either<Error, ContactResp>> => {

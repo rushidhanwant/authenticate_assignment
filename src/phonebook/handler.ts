@@ -58,16 +58,6 @@ export const checkIfNumberisAlreadyMarkedByUser = async (
     return true;
 };
 
-export const checkIfNumberIsOfRegisteredUser = async (
-    info: Ids,
-): Promise<boolean> => {
-    const resp = await repo.checkIfNumberMarkedSpam(info);
-    if (_.isNil(resp)) {
-        return false;
-    }
-    return true;
-};
-
 export const markNumberSpam = async (
     spamData: SpamData,
 ): Promise<Either<Error, SpamCount>> => {
@@ -111,12 +101,12 @@ export const searchContact = async (
     const ifValidNumber =
         serchQuery.query.length == 10 &&
         regexp.test(serchQuery.query as string);
-        
+
     if (ifValidNumber) {
         const user = await repo.checkIfNumberisOfRegisteredUser(
             serchQuery.query as string,
         );
-        
+
         if (!isLeft(user)) {
             const { email, ...restData } = user.right;
             return right([restData]);

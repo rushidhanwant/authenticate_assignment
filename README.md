@@ -5,12 +5,6 @@
 
 1. Install Nodejs 12 or activate using nvm
 2. npm install
-3. You can run local commands using npx
-   or SHELL AUTO FALLBACK mention here https://www.npmjs.com/package/npx
-
-```bash
-source <(npx --shell-auto-fallback zsh)
-```
 
 ## Install npm packages
 
@@ -25,8 +19,6 @@ cp .env.sample .env
 ```
 
 ## Install postgres & setup db
-
-For mac use [postgres app](https://postgresapp.com/)
 
 For ubuntu: `sudo apt install postgresql`
 
@@ -68,6 +60,3 @@ npm test -- --silent
 npm run db:make-migrate <migration_name>
 ```
 
-###
-
-- To debug Knex queries: `export DEBUG=knex*`
