@@ -3,25 +3,18 @@ import * as Knex from "knex";
 
 export async function up(knex: Knex): Promise<void> {
 
-    const query = `
-
-    CREATE TABLE session (
-        "sessionId" VARCHAR (50) PRIMARY KEY,
-        "createdAt" timestamptz DEFAULT now(),
-        "lastUsed" timestamptz DEFAULT now(),
-        "userId" INT REFERENCES users(id) ON DELETE CASCADE 
-    );
-    `;
-    return knex.schema.raw(query);    
+    return knex.schema.createTable('session', table => {
+        table.string('sessionId', 50).primary();
+        table.timestamps(true, true);
+        table.integer('userId').references('id').inTable('users').onDelete('CASCADE');
+      })
 }
 
 
 export async function down(knex: Knex): Promise<void> {
 
-    const query = `
-    DROP TABLE IF EXISTS session cascade;
-    `;
-    return knex.schema.raw(query);
+    return knex.schema.dropTableIfExists('session');
+
 }
 
 

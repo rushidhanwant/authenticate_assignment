@@ -3,33 +3,24 @@ import * as Knex from "knex";
 
 export async function up(knex: Knex): Promise<void> {
 
-    const query = `
-
-    CREATE TABLE spam_details (
-        created_at timestamptz DEFAULT now(),
-        updated_at timestamptz DEFAULT now(),
-        id serial PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        phone_id INTEGER REFERENCES phone_numbers(id)
-    );
-    
-        
-    CREATE TRIGGER spam_updated
-    BEFORE INSERT OR UPDATE
-    ON spam_details
-    FOR EACH ROW
-    EXECUTE PROCEDURE update_updated_at();
-    
-    `;
-    return knex.schema.raw(query);    
+    return knex.schema.createTable('spam_details', table => {
+        table.timestamps(true, true);
+        table.increments('id').primary();
+        table.integer('user_id').references('id').inTable('users').onDelete('CASCADE');
+        table.integer('phone_id').references('id').inTable('phone_numbers');
+      }).then(() => {
+        return knex.raw(`
+          CREATE TRIGGER spam_updated
+          BEFORE INSERT OR UPDATE ON spam_details
+          FOR EACH ROW
+          EXECUTE PROCEDURE update_updated_at();
+        `);
+      })   
 }
 
 
 export async function down(knex: Knex): Promise<void> {
 
-    const query = `
-    DROP TABLE IF EXISTS spam_details cascade;
-    `;
-    return knex.schema.raw(query);
+    return knex.schema.dropTableIfExists('spam_details');
 }
 
