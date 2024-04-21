@@ -56,11 +56,9 @@ npm test -- --silent
 ## Test Coverage
 ```
 npm run test:cov
-
 ```
+85% test coverage
 ![85% test coverage](https://github.com/rushidhanwant/authenticate_assignment/assets/54628056/7fa2457d-4285-407b-9e49-5f2da74c6d86)
-
-<img width="300" src="https://github.com/rushidhanwant/authenticate_assignment/assets/54628056/7fa2457d-4285-407b-9e49-5f2da74c6d8">
 
 ## Create New DB Migration
 
