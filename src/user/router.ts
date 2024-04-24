@@ -7,7 +7,7 @@ import { signUpSchema } from './types';
 function wrapError(errorCode) {
     if (errorCode === 'userAlreadyExist') {
         return {
-            code: 'email-taken',
+            code: 'number-taken',
         };
     }
     return {
